@@ -5,30 +5,20 @@ import (
 	"errors"
 )
 
-//QueueIf queue interface
-type QueueIf interface {
-	Empty() bool
-	Size() int
-	Front() (interface{}, error)
-	Back() (interface{}, error)
-	Push(e interface{})
-	Pop()
-}
-
 //Queue the Queue struct exported
-type queue struct {
+type Queue struct {
 	l *list.List
 }
 
 //NewQueue call this func to create a new queue
-func NewQueue() QueueIf {
-	return &queue{
+func NewQueue() *Queue {
+	return &Queue{
 		l: list.New(),
 	}
 }
 
 //Empty return true if queue has no element,otherwise return false
-func (q *queue) Empty() bool {
+func (q *Queue) Empty() bool {
 	if q.l.Len() == 0 {
 		return true
 	}
@@ -36,12 +26,12 @@ func (q *queue) Empty() bool {
 }
 
 //Size return current size of the queue
-func (q *queue) Size() int {
+func (q *Queue) Size() int {
 	return q.l.Len()
 }
 
 //Front return the first element in the queue
-func (q *queue) Front() (interface{}, error) {
+func (q *Queue) Front() (interface{}, error) {
 	if q.l.Len() == 0 {
 		return nil, errors.New("The queue is emtpy")
 	}
@@ -49,7 +39,7 @@ func (q *queue) Front() (interface{}, error) {
 }
 
 //Back return the last element in the queue
-func (q *queue) Back() (interface{}, error) {
+func (q *Queue) Back() (interface{}, error) {
 	if q.l.Len() == 0 {
 		return nil, errors.New("The queue is emtpy")
 	}
@@ -57,11 +47,11 @@ func (q *queue) Back() (interface{}, error) {
 }
 
 //Push a new element value
-func (q *queue) Push(e interface{}) {
+func (q *Queue) Push(e interface{}) {
 	q.l.PushBack(e)
 }
 
 //Pop pop the element from the queue
-func (q *queue) Pop() {
+func (q *Queue) Pop() {
 	q.l.Remove(q.l.Front())
 }

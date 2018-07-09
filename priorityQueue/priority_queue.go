@@ -16,21 +16,12 @@ const (
 	defaultQueueInitSize = 11
 )
 
-//PriorityQueueIf queue interface
-type PriorityQueueIf interface {
-	Empty() bool
-	Size() int
-	Top() (interface{}, error)
-	Push(e interface{})
-	Pop()
-}
-
 //Compare function, priority compare
 //Return: true, va1 >= va2 otherwise return false
 type Compare func(va1 interface{}, va2 interface{}) bool
 
 //heap, current ith element, its children are : 2i+1, and 2i +2, i starts from 0
-type priorityQueue struct {
+type PriorityQueue struct {
 	elements []interface{}
 	size     int
 	cmp      Compare
@@ -56,8 +47,8 @@ func stringCmp(va1 interface{}, va2 interface{}) bool {
 //Can pass the Compare, if it's nil, will use default compare functions
 //for known data types, supported types are int, int64, byte, string so far
 //By default, it is max priority queue, the  element on the top has highest priority
-func NewPriorityQueue(c Compare) PriorityQueueIf {
-	return &priorityQueue{
+func NewPriorityQueue(c Compare) *PriorityQueue {
+	return &PriorityQueue{
 		elements: make([]interface{}, defaultQueueInitSize),
 		size:     0,
 		cmp:      c,
@@ -65,17 +56,17 @@ func NewPriorityQueue(c Compare) PriorityQueueIf {
 }
 
 //Return true when queue is empty
-func (q *priorityQueue) Empty() bool {
+func (q *PriorityQueue) Empty() bool {
 	return q.size == 0
 }
 
 //Return the size of current queue, number of elements in the queue
-func (q *priorityQueue) Size() int {
+func (q *PriorityQueue) Size() int {
 	return q.size
 }
 
 //Return the top element
-func (q *priorityQueue) Top() (interface{}, error) {
+func (q *PriorityQueue) Top() (interface{}, error) {
 	if q.size == 0 {
 		return nil, errors.New("empty priority queue")
 	}
@@ -83,7 +74,7 @@ func (q *priorityQueue) Top() (interface{}, error) {
 }
 
 //Push an element into the queue
-func (q *priorityQueue) Push(e interface{}) {
+func (q *PriorityQueue) Push(e interface{}) {
 	i := q.size
 	if i > len(q.elements) {
 		newElements := make([]interface{}, len(q.elements)*2)
@@ -95,7 +86,7 @@ func (q *priorityQueue) Push(e interface{}) {
 }
 
 //Pop the first element in the queue
-func (q *priorityQueue) Pop() {
+func (q *PriorityQueue) Pop() {
 	if q.size == 0 {
 		return
 	}
@@ -105,7 +96,7 @@ func (q *priorityQueue) Pop() {
 	q.siftdown()
 }
 
-func (q *priorityQueue) siftdown() {
+func (q *PriorityQueue) siftdown() {
 	if q.cmp != nil {
 		q.siftdownUsingComparator()
 	} else {
@@ -113,7 +104,7 @@ func (q *priorityQueue) siftdown() {
 	}
 }
 
-func (q *priorityQueue) siftdownWithDefaultComparator() {
+func (q *PriorityQueue) siftdownWithDefaultComparator() {
 	if q.size == 0 {
 		return
 	}
@@ -152,7 +143,7 @@ func (q *priorityQueue) siftdownWithDefaultComparator() {
 	}
 }
 
-func (q *priorityQueue) siftdownUsingComparator() {
+func (q *PriorityQueue) siftdownUsingComparator() {
 	if q.size == 0 {
 		return
 	}
@@ -179,7 +170,7 @@ func (q *priorityQueue) siftdownUsingComparator() {
 	}
 }
 
-func (q *priorityQueue) siftup(k int, e interface{}) {
+func (q *PriorityQueue) siftup(k int, e interface{}) {
 	if q.cmp != nil {
 		q.siftupUsingComparator(k, e)
 	} else {
@@ -188,7 +179,7 @@ func (q *priorityQueue) siftup(k int, e interface{}) {
 }
 
 //k, the pos to be inserted, e is the new element to be inserted
-func (q *priorityQueue) siftupWithDefaultComparator(k int, e interface{}) {
+func (q *PriorityQueue) siftupWithDefaultComparator(k int, e interface{}) {
 	var cmp Compare
 	switch e.(type) {
 	case byte:
@@ -216,7 +207,7 @@ func (q *priorityQueue) siftupWithDefaultComparator(k int, e interface{}) {
 	}
 }
 
-func (q *priorityQueue) siftupUsingComparator(k int, e interface{}) {
+func (q *PriorityQueue) siftupUsingComparator(k int, e interface{}) {
 	q.elements[k] = e
 	pos := k
 	for pos > 0 {
