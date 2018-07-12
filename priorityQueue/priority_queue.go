@@ -76,7 +76,7 @@ func (q *PriorityQueue) Top() (interface{}, error) {
 //Push an element into the queue
 func (q *PriorityQueue) Push(e interface{}) {
 	i := q.size
-	if i > len(q.elements) {
+	if i >= len(q.elements) {
 		newElements := make([]interface{}, len(q.elements)*2)
 		copy(newElements, q.elements)
 		q.elements = newElements
